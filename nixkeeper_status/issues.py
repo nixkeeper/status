@@ -17,7 +17,7 @@ LABEL_COLOR = "d73a4a"
 LABEL_DESCRIPTION = "Opened and closed by the status check"
 MARKER = "<!-- nixkeeper-status: {} -->"
 MARKER_RE = re.compile(r"<!-- nixkeeper-status: ([\w.-]+) -->")
-PAGE = "https://nixkeeper.github.io/status/"
+PAGE = "https://status.nixkeeper.com/"
 
 
 def row_of(issue):
