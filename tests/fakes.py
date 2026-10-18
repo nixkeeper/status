@@ -53,6 +53,10 @@ class FakeGitHub:
 
     def create_issue(self, repo, title, body, labels):
         self.done.append(("create", title, body, labels))
+        return {
+            "number": 12,
+            "html_url": "https://github.com/nixkeeper/status/issues/12",
+        }
 
     def comment(self, repo, number, body):
         self.done.append(("comment", number, body))
