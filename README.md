@@ -3,7 +3,7 @@
 Whether each part of [nixkeeper](https://github.com/nixkeeper/nixkeeper) is
 on time: its sync and hourly updates, the five digests, start-runs, the
 tests on main of every repository, and the tokens that expire. One page,
-[nixkeeper.github.io/status](https://nixkeeper.github.io/status/), and an
+[status.nixkeeper.com](https://status.nixkeeper.com/), and an
 issue here for anything that needs attention.
 
 ## What it checks
@@ -40,9 +40,10 @@ running when either stops. If both stop, the page says its results are old.
 ## The page
 
 [`index.html`](index.html) on GitHub Pages (from main, served as it is:
-`.nojekyll`), reading `data/status.json` from the `data` branch, which each
-check replaces (main plus one commit: the issues are the record of what
-went wrong). `?data=URL` reads another status.json.
+`.nojekyll`; at status.nixkeeper.com by `CNAME`), reading
+`data/status.json` from the `data` branch, which each check replaces (main
+plus one commit: the issues are the record of what went wrong).
+`?data=URL` reads another status.json.
 
 ## Running it
 
