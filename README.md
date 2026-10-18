@@ -39,10 +39,10 @@ running when either stops. If both stop, the page says its results are old.
 
 ## The page
 
-[`index.html`](index.html) on GitHub Pages (from main), reading
-`data/status.json` from the `data` branch, which each check replaces (main
-plus one commit: the issues are the record of what went wrong).
-`?data=URL` reads another status.json.
+[`index.html`](index.html) on GitHub Pages (from main, served as it is:
+`.nojekyll`), reading `data/status.json` from the `data` branch, which each
+check replaces (main plus one commit: the issues are the record of what
+went wrong). `?data=URL` reads another status.json.
 
 ## Running it
 
