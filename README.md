@@ -45,6 +45,10 @@ running when either stops. If both stop, the page says its results are old.
 plus one commit: the issues are the record of what went wrong).
 `?data=URL` reads another status.json.
 
+`assets/` has nixkeeper's mark (the tab's icon, coloured by the status) and
+its lockup, copied from nixkeeper's `page/` (generated there by
+`scripts/brand/`, MIT like this repository).
+
 ## Running it
 
 `python3 -m nixkeeper_status check --out data` checks every row and writes

@@ -5,33 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>nixkeeper status</title>
 <meta name="description" content="Whether each of nixkeeper's workflows, digests and tokens is on time.">
+<link rel="icon" id="favicon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* nixkeeper's colours (its page/tokens.css and style.css): green ok,
+     gold late (its "warn"), pink failed, violet links. */
   :root {
     --bg: #f6f7f8;
     --surface: #ffffff;
-    --line: #e1e4e8;
+    --line: #e3e5e8;
     --ink: #14171a;
     --ink-soft: #565c63;
     --ink-faint: #6b7177;
-    --link: #2f5fb3;
-    --green: #2e9e5b;
-    --yellow: #c99a06;
-    --red: #d1453b;
+    --link: #534c84;
+    --violet: #6156a3;
+    --green: #4fa46a;
+    --green-text: #28633c;
+    --green-bg: #e0f5e5;
+    --yellow: #ac8b26;
+    --yellow-text: #695205;
+    --yellow-bg: #f6eed8;
+    --red: #ce6e76;
+    --red-text: #803e44;
+    --red-bg: #fce9ea;
     --grey: #9aa0a6;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #16181c;
-      --surface: #1e2126;
-      --line: #2e3238;
+      --surface: #1d2025;
+      --line: #2c3036;
       --ink: #edeff2;
       --ink-soft: #a3a8b0;
       --ink-faint: #848990;
-      --link: #8ab4f8;
-      --green: #3fb96f;
-      --yellow: #e0b42a;
-      --red: #f0645a;
+      --link: #aaa1f6;
+      --violet: #8c82d4;
+      --green: #6fc488;
+      --green-text: #6fc488;
+      --green-bg: #0c2815;
+      --yellow: #cbaa4b;
+      --yellow-text: #cbaa4b;
+      --yellow-bg: #2b2001;
+      --red: #f08d94;
+      --red-text: #f08d94;
+      --red-bg: #361719;
       --grey: #6e747b;
       color-scheme: dark;
     }
@@ -41,26 +61,62 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 15px/1.45 "Instrument Sans", system-ui, sans-serif;
   }
-  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 48px; }
   a { color: var(--link); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  h1 { font-size: 22px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
-  .sub { color: var(--ink-soft); margin: 0 0 24px; }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  header .brand { display: flex; align-items: center; }
+  header .brand img { height: 26px; width: auto; display: block; }
+  header .label {
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    padding-left: 10px;
+    border-left: 1px solid var(--line);
+    line-height: 26px;
+  }
+  .summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    margin: 0 0 6px;
+  }
+  .summary.green { background: var(--green-bg); border-color: transparent; }
+  .summary.yellow { background: var(--yellow-bg); border-color: transparent; }
+  .summary.red { background: var(--red-bg); border-color: transparent; }
+  .summary b { font-size: 17px; font-weight: 600; }
+  .summary.green b { color: var(--green-text); }
+  .summary.yellow b { color: var(--yellow-text); }
+  .summary.red b { color: var(--red-text); }
+  .summary .dot { margin-top: 0; width: 12px; height: 12px; flex: none; }
+  .sub { color: var(--ink-faint); font-size: 13px; margin: 0 0 8px; }
   .stale {
     border: 1px solid var(--line);
     border-left: 4px solid var(--yellow);
     background: var(--surface);
     padding: 10px 14px;
     border-radius: 6px;
-    margin: 0 0 20px;
+    margin: 12px 0 0;
   }
   .stale.red { border-left-color: var(--red); }
   h2 {
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: .04em;
+    letter-spacing: .06em;
     color: var(--ink-faint);
     margin: 28px 0 8px;
   }
@@ -87,24 +143,40 @@
     margin-top: 6px;
     background: var(--grey);
   }
-  h1 .dot { margin-top: 0; width: 12px; height: 12px; }
   .dot.green { background: var(--green); }
   .dot.yellow { background: var(--yellow); }
   .dot.red { background: var(--red); }
-  .name { font-weight: 600; }
+  .name { font-weight: 600; color: var(--ink); }
   .every { color: var(--ink-faint); font-size: 13px; margin-left: 6px; }
   ul.parts { list-style: none; margin: 2px 0 0; padding: 0; color: var(--ink-soft); font-size: 14px; }
   ul.parts li { overflow-wrap: anywhere; }
-  ul.parts li.yellow { color: var(--yellow); }
-  ul.parts li.red { color: var(--red); }
+  ul.parts a { color: inherit; }
+  ul.parts a:hover { color: var(--link); }
+  ul.parts li.yellow { color: var(--yellow-text); }
+  ul.parts li.red { color: var(--red-text); font-weight: 500; }
   ul.parts li.note { color: var(--ink-faint); }
-  footer { margin-top: 32px; color: var(--ink-faint); font-size: 13px; }
+  footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 13px;
+  }
 </style>
 </head>
 <body>
 <main>
-  <h1><span class="dot" id="overall"></span>nixkeeper status</h1>
-  <p class="sub" id="checked">Reading…</p>
+  <header>
+    <a class="brand" href="https://nixkeeper.com/" title="nixkeeper.com">
+      <picture>
+        <source srcset="assets/nixkeeper-lockup-tight-dark.svg" media="(prefers-color-scheme: dark)">
+        <img src="assets/nixkeeper-lockup-tight.svg" alt="nixkeeper" width="132" height="26">
+      </picture>
+    </a>
+    <span class="label">status</span>
+  </header>
+  <p class="summary" id="summary"><span class="dot"></span><b>Reading…</b></p>
+  <p class="sub" id="checked"></p>
   <div id="content"></div>
   <footer>
     Green: on time. Yellow: late. Red: needs attention, with an
@@ -152,9 +224,23 @@
   function render(status) {
     const age = (Date.now() - new Date(status.checkedAt)) / 3600000;
     const overall = age > DEAD_HOURS ? 'red' : age > STALE_HOURS ? 'yellow' : status.state;
-    document.getElementById('overall').className = `dot ${overall}`;
+    const count = (state) => status.rows.filter((r) => r.state === state).length;
+    const [red, yellow, unknown] = [count('red'), count('yellow'), count('unknown')];
+    const said = [
+      red && `${red} need${red === 1 ? 's' : ''} attention`,
+      yellow && `${yellow} late`,
+      unknown && `${unknown} couldn't be read`,
+    ].filter(Boolean);
+    const headline =
+      age > STALE_HOURS ? 'The status check is late' : said.length ? said.join(', ') : 'Everything is on time';
+    document.getElementById('summary').className = `summary ${overall}`;
+    document.getElementById('summary').innerHTML = `<span class="dot ${esc(overall)}"></span><b>${esc(headline)}</b>`;
     const word = { red: 'Needs attention', yellow: 'Late' }[overall];
     document.title = word ? `${word} · nixkeeper status` : 'nixkeeper status';
+    // The tab's icon: nixkeeper's mark, one chevron coloured as on its
+    // page (green ok, orange late, pink failing).
+    const icon = { green: 'ok', yellow: 'r', red: 'f' }[overall];
+    document.getElementById('favicon').href = `assets/favicon${icon ? `-${icon}` : ''}.svg`;
     const run = status.run ? ` (<a href="${esc(status.run)}">the run</a>)` : '';
     document.getElementById('checked').innerHTML =
       `Checked ${ago(status.checkedAt)}${run}, ${new Date(status.checkedAt).toLocaleString()}.`;
@@ -176,7 +262,8 @@
     })
     .then(render)
     .catch((e) => {
-      document.getElementById('checked').textContent = `The status couldn't be read: ${e.message}.`;
+      document.getElementById('summary').innerHTML = `<span class="dot"></span><b>The status couldn't be read</b>`;
+      document.getElementById('checked').textContent = e.message;
     });
 </script>
 </body>
