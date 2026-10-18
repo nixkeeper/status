@@ -175,7 +175,7 @@
     </a>
     <span class="label">status</span>
   </header>
-  <p class="summary" id="summary"><span class="dot"></span><b>Reading…</b></p>
+  <p class="summary" id="summary" aria-live="polite"><span class="dot" aria-hidden="true"></span><b>Reading…</b></p>
   <p class="sub" id="checked"></p>
   <div id="content"></div>
   <footer>
@@ -211,9 +211,12 @@
     return `<li class="${p.state || 'note'}">${body}</li>`;
   }
 
+  // What a dot's colour means, in words: for screen readers and on hover.
+  const SAID = { green: 'on time', yellow: 'late', red: 'needs attention', unknown: "couldn't be read" };
+
   function rowHtml(r) {
     return `<li>
-      <span class="dot ${esc(r.state)}" title="${esc(r.state)}"></span>
+      <span class="dot ${esc(r.state)}" role="img" aria-label="${esc(SAID[r.state] || r.state)}" title="${esc(SAID[r.state] || r.state)}"></span>
       <div>
         <a class="name" href="${esc(r.link)}">${esc(r.name)}</a><span class="every">${esc(r.every)}</span>
         <ul class="parts">${r.parts.map(partHtml).join('')}</ul>
@@ -234,7 +237,7 @@
     const headline =
       age > STALE_HOURS ? 'The status check is late' : said.length ? said.join(', ') : 'Everything is on time';
     document.getElementById('summary').className = `summary ${overall}`;
-    document.getElementById('summary').innerHTML = `<span class="dot ${esc(overall)}"></span><b>${esc(headline)}</b>`;
+    document.getElementById('summary').innerHTML = `<span class="dot ${esc(overall)}" aria-hidden="true"></span><b>${esc(headline)}</b>`;
     const word = { red: 'Needs attention', yellow: 'Late' }[overall];
     document.title = word ? `${word} · nixkeeper status` : 'nixkeeper status';
     // The tab's icon: nixkeeper's mark, one chevron coloured as on its
@@ -262,7 +265,7 @@
     })
     .then(render)
     .catch((e) => {
-      document.getElementById('summary').innerHTML = `<span class="dot"></span><b>The status couldn't be read</b>`;
+      document.getElementById('summary').innerHTML = `<span class="dot" aria-hidden="true"></span><b>The status couldn't be read</b>`;
       document.getElementById('checked').textContent = e.message;
     });
 </script>
