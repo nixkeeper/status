@@ -34,6 +34,14 @@ repository is all it takes to be told: GitHub sends issues by mail and to
 its mobile app. When GitHub can't be read for most rows, no issue opens or
 closes.
 
+With a Telegram bot set up, each issue opened or closed is also a message,
+and so is a check that fails: create a bot with
+[@BotFather](https://t.me/BotFather), send it any message, find your chat's
+id in `https://api.telegram.org/bot<token>/getUpdates` (`message.chat.id`),
+and add both as the repository's Actions secrets `TELEGRAM_BOT_TOKEN` and
+`TELEGRAM_CHAT_ID`. Starting the check by hand with "Send a test message"
+checks them. Without them, nothing is sent.
+
 The check is started by GitHub's schedule and by start-runs, so it keeps
 running when either stops. If both stop, the page says its results are old.
 

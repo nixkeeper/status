@@ -10,6 +10,7 @@ that's GitHub's trouble, not the rows'."""
 
 import re
 
+from . import telegram as tg
 from .check import GREEN, RED, UNKNOWN, text_of
 
 LABEL = "status"
@@ -87,8 +88,9 @@ def plan(status, open_issues):
     return actions
 
 
-def apply(gh, repo, status, now, run_url=None, dry_run=False, log=print):
-    """Opens and closes this repository's issues as plan says."""
+def apply(gh, repo, status, now, run_url=None, dry_run=False, log=print, telegram=None):
+    """Opens and closes this repository's issues as plan says, telling
+    telegram (a Telegram, or None) of each."""
     actions = plan(status, gh.open_issues(repo, LABEL))
     if not actions:
         return actions
@@ -99,11 +101,18 @@ def apply(gh, repo, status, now, run_url=None, dry_run=False, log=print):
         if action[0] == "open":
             log(f"opening an issue: {title(row, now)}")
             if not dry_run:
-                gh.create_issue(repo, title(row, now), body(row, now, run_url), [LABEL])
+                made = gh.create_issue(
+                    repo, title(row, now), body(row, now, run_url), [LABEL]
+                )
+                if telegram:
+                    url = (made or {}).get("html_url")
+                    telegram.send(tg.opened(row, title(row, now), url, PAGE))
         else:
             issue = action[2]
             log(f"closing #{issue['number']}: {row['name']} is on time again")
             if not dry_run:
                 gh.comment(repo, issue["number"], recovered(row, now, run_url))
                 gh.close(repo, issue["number"])
+                if telegram:
+                    telegram.send(tg.closed(row, issue.get("html_url")))
     return actions
