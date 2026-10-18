@@ -1,0 +1,43 @@
+name: "Status: check"
+
+# Hourly: checks whether each of nixkeeper's workflows, digests and tokens
+# is on time (nixkeeper_status/checks.py), publishes the results for the
+# page (data/status.json on the data branch), and opens an issue for each
+# that needs attention, closing it once it's on time again. Started by
+# GitHub's schedule and also by start-runs (from outside GitHub), so it
+# keeps running when either stops: that's what it checks.
+
+on:
+  schedule:
+    - cron: '41 * * * *'  # hourly, off the others' minutes
+  workflow_dispatch: {}
+
+# One at a time, so two checks never open the same issue.
+concurrency:
+  group: status
+  cancel-in-progress: false
+
+permissions:
+  contents: write  # publishes the data branch
+  issues: write    # opens and closes the status issues
+  actions: read    # reads the workflows' runs
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      # The runner's Python 3: the check uses the standard library only.
+      - name: Check, and open or close the issues
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -m nixkeeper_status check --out data --issues
+
+      - name: Publish the status
+        run: |
+          bash scripts/data-branch.sh publish "status: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
