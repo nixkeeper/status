@@ -19,6 +19,8 @@ Every hour, [`check.yml`](.github/workflows/check.yml) looks at each row of
 - **tests on main** in every repository;
 - **tokens**: the security tracker's (it renews itself) and start-runs'
   (renewed by hand), before they expire;
+- **package lists**: mistakes the sync found in them, such as a list
+  naming a package nixpkgs no longer has: any is red;
 - and backlogs worth seeing (logs or diffs still to read), never late.
 
 Each part says when it's late, from a week of real runs: green is on time,

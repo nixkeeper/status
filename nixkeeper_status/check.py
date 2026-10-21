@@ -138,6 +138,22 @@ def _note(part, gh, cache):
     return _part("note", None, part["text"].format(n=f"{n:,}"))
 
 
+# How many of a part's problems its text names; the rest are counted.
+PROBLEMS_SHOWN = 3
+
+
+def _problems(part, gh, cache):
+    found = field(_read(gh, cache, part["url"]), part["field"]) or []
+    what = part["what"]
+    if not found:
+        return _part(what, GREEN, f"{what}: no problems")
+    named = "; ".join(found[:PROBLEMS_SHOWN])
+    more = len(found) - PROBLEMS_SHOWN
+    n = f"{len(found)} problem{'s' if len(found) > 1 else ''}"
+    text = f"{what}: {n}, {named}" + (f"; and {more} more" if more > 0 else "")
+    return _part(what, RED, text)
+
+
 def _ci(part, gh):
     runs = gh.runs(part["repo"], part["workflow"], branch="main", event="push")
     done = [
@@ -221,6 +237,8 @@ def check_row(row, gh, now, cache):
                 found = _data(part, gh, now, cache)
             elif kind == "note":
                 found = _note(part, gh, cache)
+            elif kind == "problems":
+                found = _problems(part, gh, cache)
             elif kind == "ci":
                 found = _ci(part, gh)
             elif kind == "started":

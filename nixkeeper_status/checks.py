@@ -22,6 +22,9 @@ Kinds of parts:
 - expiry: a token's expiry, from a meta.json field or a date written here.
 - note: a number worth seeing (a backlog), shown only when it's not zero;
   never late.
+- problems: a list of mistakes in a JSON field (the package lists'
+  listProblems, which the sync writes when a list names something that's
+  gone): any at all is an issue, none is on time.
 """
 
 DASHBOARD = "https://nixkeeper.com/data/"
@@ -56,6 +59,10 @@ def note(url, field, text):
     return {"kind": "note", "url": url, "field": field, "text": text}
 
 
+def problems(url, field, what):
+    return {"kind": "problems", "url": url, "field": field, "what": what}
+
+
 HOURLY_DIGESTS = [
     ("nixkeeper/digest-builds", "digest.yml"),
     ("nixkeeper/digest-vulnerabilities", "digest.yml"),
@@ -80,6 +87,19 @@ ROWS = [
         "parts": [
             run("nixkeeper/nixkeeper", "data-daily.yml", 4, 7),
             data(DASHBOARD + "index.json", "checkedAt", 4, 8, "the page's data"),
+        ],
+    },
+    {
+        "id": "package-lists",
+        "group": "runs",
+        "name": "nixkeeper: package lists",
+        "every": "checked by every sync",
+        "link": "https://nixkeeper.com/",
+        "parts": [
+            # A list naming a package nixpkgs no longer has
+            # (extraPackages.gaming: pokemmo-installer, 2026-10-20): the page
+            # says so at its top, here it's an issue.
+            problems(DASHBOARD + "index.json", "listProblems", "the package lists"),
         ],
     },
     {
