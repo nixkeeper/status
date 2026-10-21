@@ -119,6 +119,40 @@ class Data(unittest.TestCase):
         self.assertEqual(row["state"], check.UNKNOWN)
 
 
+class Problems(unittest.TestCase):
+    """The package lists' problems, 2026-10-20: a list naming a package
+    nixpkgs had removed."""
+
+    URL = checks.DASHBOARD + "index.json"
+    part = checks.problems(URL, "listProblems", "the package lists")
+
+    def test_none(self):
+        row = one(self.part, FakeGitHub(files={self.URL: {"checkedAt": at(1)}}))
+        self.assertEqual(row["state"], check.GREEN)
+        self.assertEqual(row["parts"][0]["text"], "the package lists: no problems")
+
+    def test_any_is_an_issue(self):
+        found = [
+            "extraPackages.gaming: pokemmo-installer is neither a nixpkgs attribute"
+        ]
+        row = one(self.part, FakeGitHub(files={self.URL: {"listProblems": found}}))
+        self.assertEqual(row["state"], check.RED)
+        self.assertEqual(
+            row["parts"][0]["text"],
+            "the package lists: 1 problem, extraPackages.gaming: pokemmo-installer "
+            "is neither a nixpkgs attribute",
+        )
+        many = [f"p{i}" for i in range(5)]
+        row = one(self.part, FakeGitHub(files={self.URL: {"listProblems": many}}))
+        self.assertEqual(
+            row["parts"][0]["text"],
+            "the package lists: 5 problems, p0; p1; p2; and 2 more",
+        )
+
+    def test_unreadable(self):
+        self.assertEqual(one(self.part, FakeGitHub())["state"], check.UNKNOWN)
+
+
 class Tests(unittest.TestCase):
     part = {"kind": "ci", "repo": "nixkeeper/status", "workflow": "ci.yml"}
     key = ("nixkeeper/status", "ci.yml")
@@ -223,7 +257,7 @@ class Rows(unittest.TestCase):
     def test_well_formed(self):
         ids = [r["id"] for r in checks.ROWS]
         self.assertEqual(len(ids), len(set(ids)))
-        kinds = {"run", "data", "note", "ci", "started", "expiry"}
+        kinds = {"run", "data", "note", "ci", "started", "expiry", "problems"}
         for row in checks.ROWS:
             self.assertIn(row["group"], checks.GROUPS)
             for part in row["parts"]:
