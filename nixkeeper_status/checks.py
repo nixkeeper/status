@@ -22,6 +22,10 @@ Kinds of parts:
 - expiry: a token's expiry, from a meta.json field or a date written here.
 - note: a number worth seeing (a backlog), shown only when it's not zero;
   never late.
+- source: what nixkeeper's last sync read from a source, from its
+  index.json's "sources" (the counts and evaluations its page's "Where the
+  data is from" listed, until it grew too long for a phone): a note, never
+  late; "not used" with why, when the sync didn't use it.
 - problems: a list of mistakes in a JSON field (the package lists'
   listProblems, which the sync writes when a list names something that's
   gone): any at all is an issue, none is on time.
@@ -59,6 +63,16 @@ def note(url, field, text):
     return {"kind": "note", "url": url, "field": field, "text": text}
 
 
+def source(key, label, say):
+    """A note on what nixkeeper's last sync read from a source: label, then
+    say(its entry in index.json's "sources"), and when it was read."""
+    return {"kind": "source", "key": key, "label": label, "say": say}
+
+
+def _n(x):
+    return f"{x:,}" if isinstance(x, int) else str(x)
+
+
 def problems(url, field, what):
     return {"kind": "problems", "url": url, "field": field, "what": what}
 
@@ -87,6 +101,7 @@ ROWS = [
         "parts": [
             run("nixkeeper/nixkeeper", "data-daily.yml", 4, 7),
             data(DASHBOARD + "index.json", "checkedAt", 4, 8, "the page's data"),
+            source("nixpkgs", "nixpkgs", lambda s: f"channel at {s['revision'][:7]}"),
         ],
     },
     {
@@ -147,6 +162,17 @@ ROWS = [
                 "blocked.pending",
                 "{n} blocked builds still to look up",
             ),
+            source("hydra", "master", lambda s: f"evaluation {s['eval']}"),
+            source(
+                "branch:staging-next",
+                "staging-next",
+                lambda s: f"evaluation {s['eval']}",
+            ),
+            source(
+                "branch:haskell-updates",
+                "haskell-updates",
+                lambda s: f"evaluation {s['eval']}, {_n(s.get('jobs', '?'))} jobs",
+            ),
         ],
     },
     {
@@ -158,6 +184,37 @@ ROWS = [
         "parts": [
             run("nixkeeper/digest-versions", "digest.yml", 14, 26),
             data(digest_meta("digest-versions"), "outdatedAt", 14, 26),
+            source("versions", "Repology", lambda s: f"{_n(s['projects'])} projects"),
+            source(
+                "releases", "GitHub releases", lambda s: f"{_n(s['packages'])} packages"
+            ),
+            source(
+                "typst", "Typst Universe", lambda s: f"{_n(s['packages'])} packages"
+            ),
+            source(
+                "emacs",
+                "Emacs archives",
+                lambda s: (
+                    f"MELPA {_n(s['melpa'])}, MELPA Stable {_n(s['melpaStable'])}, "
+                    f"NonGNU {_n(s['nongnu'])}, GNU {_n(s['gnu'])} packages"
+                ),
+            ),
+            source(
+                "stackage",
+                "Stackage LTS",
+                lambda s: (
+                    f"nixpkgs follows {s['nixpkgs']}, {s['snapshot']} is the newest "
+                    f"({_n(s['packages'])} packages)"
+                ),
+            ),
+            source(
+                "cran",
+                "CRAN, Bioconductor",
+                lambda s: (
+                    f"CRAN {_n(s['cran'])}, Bioconductor {s['biocVersion']}: "
+                    f"{_n(s['bioc'] + s['annotation'] + s['experiment'])} packages"
+                ),
+            ),
         ],
     },
     {
@@ -173,6 +230,11 @@ ROWS = [
                 digest_meta("digest-update-bot"),
                 "pending",
                 "{n} attempts' logs still to read",
+            ),
+            source(
+                "queue",
+                "the bot's queue",
+                lambda s: f"going round every {s['cycleDays']} days",
             ),
         ],
     },
@@ -192,6 +254,21 @@ ROWS = [
                 "the tracker read",
             ),
             data(digest_meta("digest-vulnerabilities"), "osv.readAt", 2, 5, "OSV read"),
+            source(
+                "tracker",
+                "the security tracker",
+                lambda s: (
+                    f"{_n(s['suggestions'])} CVEs on {_n(s['packages'])} packages "
+                    f"(release {s['release']})"
+                ),
+            ),
+            source(
+                "osv",
+                "OSV",
+                lambda s: (
+                    f"{_n(s['advisories'])} advisories on {_n(s['packages'])} packages"
+                ),
+            ),
         ],
     },
     {
@@ -208,6 +285,15 @@ ROWS = [
                 digest_meta("digest-prs"),
                 "diffs.pending",
                 "{n} PRs' diffs still to read",
+            ),
+            source(
+                "prs",
+                "nixpkgs' PRs",
+                lambda s: (
+                    f"{_n(s['prs'])} open PRs, {_n(s['issues'])} issues, "
+                    f"{_n(s['merged'])} merged since the channel, "
+                    f"{_n(s['staging'])} on staging"
+                ),
             ),
         ],
     },

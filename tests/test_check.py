@@ -119,6 +119,33 @@ class Data(unittest.TestCase):
         self.assertEqual(row["state"], check.UNKNOWN)
 
 
+class Source(unittest.TestCase):
+    index = checks.DASHBOARD + "index.json"
+    part = checks.source("osv", "OSV", lambda s: f"{s['advisories']} advisories")
+
+    def sources(self, **found):
+        return FakeGitHub(files={self.index: {"sources": found}})
+
+    def test_read(self):
+        row = one(
+            self.part, self.sources(osv={"used": True, "at": at(2), "advisories": 7})
+        )
+        self.assertEqual(row["parts"][0]["text"], "OSV: 7 advisories, as of {ago}")
+        self.assertEqual(row["parts"][0]["state"], None)
+
+    def test_not_used(self):
+        row = one(self.part, self.sources(osv={"used": False, "why": "it's old"}))
+        self.assertEqual(row["parts"][0]["text"], "OSV: not used, it's old")
+
+    def test_changed_shape(self):
+        row = one(self.part, self.sources(osv={"used": True}))
+        self.assertEqual(row["parts"][0]["text"], "OSV: read")
+
+    def test_missing_or_unreadable(self):
+        self.assertEqual(one(self.part, self.sources())["parts"], [])
+        self.assertEqual(one(self.part, FakeGitHub())["parts"], [])
+
+
 class Problems(unittest.TestCase):
     """The package lists' problems, 2026-10-20: a list naming a package
     nixpkgs had removed."""
@@ -257,7 +284,7 @@ class Rows(unittest.TestCase):
     def test_well_formed(self):
         ids = [r["id"] for r in checks.ROWS]
         self.assertEqual(len(ids), len(set(ids)))
-        kinds = {"run", "data", "note", "ci", "started", "expiry", "problems"}
+        kinds = {"run", "data", "note", "ci", "started", "expiry", "problems", "source"}
         for row in checks.ROWS:
             self.assertIn(row["group"], checks.GROUPS)
             for part in row["parts"]:

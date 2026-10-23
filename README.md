@@ -21,6 +21,9 @@ Every hour, [`check.yml`](.github/workflows/check.yml) looks at each row of
   (renewed by hand), before they expire;
 - **package lists**: mistakes the sync found in them, such as a list
   naming a package nixpkgs no longer has: any is red;
+- what nixkeeper's last sync read from each source (Repology's projects,
+  Hydra's evaluations, the security tracker's CVEs...) and how old it is,
+  from the page's `index.json`; nixkeeper.com points here for them;
 - and backlogs worth seeing (logs or diffs still to read), never late.
 
 Each part says when it's late, from a week of real runs: green is on time,
