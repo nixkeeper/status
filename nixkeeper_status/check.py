@@ -138,6 +138,32 @@ def _note(part, gh, cache):
     return _part("note", None, part["text"].format(n=f"{n:,}"))
 
 
+def _source(part, gh, cache):
+    """A note on what nixkeeper's last sync read from a source (index.json's
+    "sources"): None when it doesn't name the source, or index.json can't be
+    read (the sync's own row says so; a note never turns a digest's row grey)."""
+    try:
+        index = _read(gh, cache, checks.DASHBOARD + "index.json")
+    except Unavailable:
+        return None
+    found = (index.get("sources") or {}).get(part["key"])
+    if not found:
+        return None
+    label = part["label"]
+    if not found.get("used"):
+        return _part(
+            "source", None, f"{label}: not used, {found.get('why') or 'unknown'}"
+        )
+    try:
+        said = part["say"](found)
+    except (KeyError, TypeError):
+        said = "read"
+    at = parse_time(found["at"]) if found.get("at") else None
+    return _part(
+        "source", None, f"{label}: {said}" + (", as of {ago}" if at else ""), at
+    )
+
+
 # How many of a part's problems its text names; the rest are counted.
 PROBLEMS_SHOWN = 3
 
@@ -239,6 +265,8 @@ def check_row(row, gh, now, cache):
                 found = _note(part, gh, cache)
             elif kind == "problems":
                 found = _problems(part, gh, cache)
+            elif kind == "source":
+                found = _source(part, gh, cache)
             elif kind == "ci":
                 found = _ci(part, gh)
             elif kind == "started":
