@@ -99,6 +99,13 @@ class Data(unittest.TestCase):
             row["parts"][0]["text"], "data from {ago}, but it's expected within 2 h"
         )
 
+    def test_named(self):
+        part = checks.data(META, "at", 2, 4, "x", lambda m: f"evaluation {m['eval']}")
+        row = one(part, FakeGitHub(files={META: {"at": at(1), "eval": 5}}))
+        self.assertEqual(row["parts"][0]["text"], "evaluation 5, as of {ago}")
+        row = one(part, FakeGitHub(files={META: {"at": at(1)}}))
+        self.assertEqual(row["parts"][0]["text"], "x from {ago}")
+
     def test_never_red(self):
         part = checks.data(META, "fetchedAt", 24, None)
         gh = FakeGitHub(files={META: {"fetchedAt": at(200)}})

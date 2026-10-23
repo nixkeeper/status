@@ -121,13 +121,18 @@ def _read(gh, cache, url):
 
 def _data(part, gh, now, cache):
     what = part["what"]
-    value = field(_read(gh, cache, part["url"]), part["field"])
+    meta = _read(gh, cache, part["url"])
+    value = field(meta, part["field"])
     if not value:
         return _part(what, YELLOW, f"{what}: no {part['field']} in its meta.json")
     at = parse_time(value)
     state = by_age(hours_since(at, now), part["green"], part["red"])
     late = f", but it's expected within {expected(part['green'])}"
-    text = f"{what} from {{ago}}" + (late if state != GREEN else "")
+    try:
+        text = f"{part['say'](meta)}, as of {{ago}}" if part.get("say") else None
+    except (KeyError, TypeError):
+        text = None
+    text = (text or f"{what} from {{ago}}") + (late if state != GREEN else "")
     return _part(what, state, text, at)
 
 

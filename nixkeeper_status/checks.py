@@ -48,7 +48,9 @@ def run(repo, workflow, green, red):
     }
 
 
-def data(url, field, green, red, what="data"):
+def data(url, field, green, red, what="data", say=None):
+    """When a meta.json's field says its data is from: "{what} from {ago}",
+    or "{say(meta)}, as of {ago}" to name what it is."""
     return {
         "kind": "data",
         "url": url,
@@ -56,6 +58,7 @@ def data(url, field, green, red, what="data"):
         "green": green,
         "red": red,
         "what": what,
+        "say": say,
     }
 
 
@@ -151,6 +154,7 @@ ROWS = [
                 24,
                 None,
                 "master's evaluation read",
+                lambda m: f"master: evaluation {m['eval']}",
             ),
             note(
                 digest_meta("digest-builds"),
@@ -162,7 +166,6 @@ ROWS = [
                 "blocked.pending",
                 "{n} blocked builds still to look up",
             ),
-            source("hydra", "master", lambda s: f"evaluation {s['eval']}"),
             source(
                 "branch:staging-next",
                 "staging-next",
