@@ -17,6 +17,13 @@ FAILED = {"failure", "timed_out", "startup_failure"}
 # Neither passed nor failed: a newer run took its place, or it had nothing
 # to do.
 NEUTRAL = {"cancelled", "skipped", "neutral", "stale"}
+# A cancelled run whose job ran this long ran out of time (GitHub reports a
+# job past its timeout-minutes as cancelled), or was stopped well into its
+# work: it counts as failed. Shorter than every workflow's time limit (20
+# minutes, nixkeeper's hourly updates). A run replaced while it waited in
+# its queue never starts a job. digest-builds' runs ran out of time every
+# hour on 2026-10-26, from 11:15, and the page stayed green.
+RAN_OUT_MINUTES = 15
 
 
 def worst(states):
@@ -87,25 +94,50 @@ def _run(part, gh, now):
         text = f"last run {{ago}}: {newest['conclusion']}"
     if state != GREEN:
         text = f"last run {{ago}}, but one is expected within {expected(part['green'])}"
-    # The results of the last runs that passed or failed, newest first.
-    done = [
-        r for r in runs if r["status"] == "completed" and r["conclusion"] not in NEUTRAL
-    ]
-    failed = 0
-    for r in done:
-        if r["conclusion"] not in FAILED:
+    # The last runs that passed or failed, newest first, up to one that
+    # passed.
+    failed, ran_out, first = 0, 0, None
+    for r in runs:
+        if r["status"] != "completed":
+            continue
+        out = r["conclusion"] == "cancelled" and _ran_out(gh, part["repo"], r)
+        if r["conclusion"] in NEUTRAL and not out:
+            continue
+        first = first or r
+        if r["conclusion"] not in FAILED and not out:
             break
         failed += 1
+        ran_out += out
     link = newest["html_url"]
     if failed:
         state = worst([state, RED if failed >= 2 else YELLOW])
-        link = done[0]["html_url"]
+        link = first["html_url"]
         text += (
             f"; the last {failed} runs failed"
             if failed >= 2
             else "; the last run failed"
         )
+        if ran_out:
+            text += f" ({ran_out} ran out of time)"
     return _part("runs", state, text, at, link)
+
+
+def _ran_out(gh, repo, r):
+    """Whether cancelled run r's job ran RAN_OUT_MINUTES or more (its jobs
+    unreadable: no)."""
+    try:
+        jobs = gh.jobs(repo, r["id"])
+    except Unavailable:
+        return False
+    return any(
+        j.get("started_at")
+        and j.get("completed_at")
+        and (
+            parse_time(j["completed_at"]) - parse_time(j["started_at"])
+        ).total_seconds()
+        >= RAN_OUT_MINUTES * 60
+        for j in jobs
+    )
 
 
 def _read(gh, cache, url):

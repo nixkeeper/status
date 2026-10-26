@@ -13,6 +13,7 @@ def at(hours_ago):
 
 def run(hours_ago, conclusion="success", status="completed", event="schedule", n=1):
     return {
+        "id": n,
         "created_at": at(hours_ago),
         "status": status,
         "conclusion": conclusion if status == "completed" else None,
@@ -22,8 +23,9 @@ def run(hours_ago, conclusion="success", status="completed", event="schedule", n
 
 
 class FakeGitHub:
-    def __init__(self, runs=None, files=None, issues=None):
+    def __init__(self, runs=None, files=None, issues=None, jobs=None):
         self.runs_by = runs or {}  # (repo, workflow): [runs, newest first]
+        self.jobs_by = jobs or {}  # run id: [jobs]
         self.files = files or {}  # url: JSON, or an Unavailable
         self.issues = issues or []
         self.done = []
@@ -36,6 +38,9 @@ class FakeGitHub:
         if event:
             found = [r for r in found if r["event"] == event]
         return found
+
+    def jobs(self, repo, run_id):
+        return self.jobs_by.get(run_id, [])
 
     def get(self, url):
         found = self.files.get(url)

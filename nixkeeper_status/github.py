@@ -30,6 +30,7 @@ class GitHub:
         self.token = token
         self.opener = opener
         self._runs = {}
+        self._jobs = {}
 
     def _request(self, method, url, body=None):
         headers = {"User-Agent": USER_AGENT}
@@ -75,6 +76,13 @@ class GitHub:
             )
             self._runs[key] = self.get(url)["workflow_runs"]
         return self._runs[key]
+
+    def jobs(self, repo, run_id):
+        """A run's jobs (each asked once a check)."""
+        if (repo, run_id) not in self._jobs:
+            url = f"{API}/repos/{repo}/actions/runs/{run_id}/jobs"
+            self._jobs[(repo, run_id)] = self.get(url)["jobs"]
+        return self._jobs[(repo, run_id)]
 
     # This repository's issues.
 

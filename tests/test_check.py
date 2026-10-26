@@ -72,6 +72,30 @@ class Runs(unittest.TestCase):
         self.assertEqual(row["state"], check.RED)
         self.assertIn("the last 2 runs failed", row["parts"][0]["text"])
 
+    def test_ran_out_of_time(self):
+        # digest-builds, 2026-10-26: each run cancelled at its 60-minute limit.
+        hour = [{"started_at": at(1.5), "completed_at": at(0.5)}]
+        gh = FakeGitHub(
+            {R: [run(0.5, "cancelled", n=3), run(1.5, "cancelled", n=2), run(2.5)]},
+            jobs={3: hour, 2: hour},
+        )
+        row = one(self.part, gh)
+        self.assertEqual(row["state"], check.RED)
+        self.assertIn(
+            "the last 2 runs failed (2 ran out of time)", row["parts"][0]["text"]
+        )
+        self.assertEqual(row["parts"][0]["link"], "https://github.com/runs/3")
+
+    def test_replaced_or_stopped_soon_isnt_failed(self):
+        # Replaced while it waited in its queue (no job), or stopped after
+        # five minutes.
+        five = [{"started_at": at(0.6), "completed_at": at(0.5)}]
+        gh = FakeGitHub(
+            {R: [run(0.5, "cancelled", n=3), run(0.6, "cancelled", n=2), run(1.5)]},
+            jobs={2: five},
+        )
+        self.assertEqual(one(self.part, gh)["state"], check.GREEN)
+
     def test_running(self):
         row = one(
             self.part, FakeGitHub({R: [run(0.2, status="in_progress"), run(1.2)]})
