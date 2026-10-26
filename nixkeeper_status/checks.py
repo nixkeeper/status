@@ -12,7 +12,9 @@ skips when the sync starts), the 3-hourly ones at most 3 h, digest-versions
 Kinds of parts:
 
 - run: a workflow's newest run (when it was started) and the last ones'
-  results: one failed is late, two in a row an issue.
+  results: one failed is late, two in a row an issue. A cancelled run
+  counts as failed when its job ran 15 minutes or more (it ran out of
+  time); one replaced while it waited, or stopped soon, counts for nothing.
 - data: when a digest's (or the dashboard's) data was made, a field of its
   meta.json: a run can pass and still publish nothing new.
 - ci: the tests on main (the newest push's CI run): failing is an issue.
