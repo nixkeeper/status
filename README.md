@@ -17,8 +17,8 @@ Every hour, [`check.yml`](.github/workflows/check.yml) looks at each row of
 - **start-runs**: when it last started a run (it starts them from outside
   GitHub, whose own schedules come hours late when it's busy);
 - **tests on main** in every repository;
-- **tokens**: the security tracker's (it renews itself) and start-runs'
-  (renewed by hand), before they expire;
+- **tokens**: the security tracker's (it renews itself), start-runs' and
+  digest-versions' GitLab token (renewed by hand), before they expire;
 - **package lists**: mistakes the sync found in them, such as a list
   naming a package nixpkgs no longer has: any is red;
 - what nixkeeper's last sync read from each source (Repology's projects,
