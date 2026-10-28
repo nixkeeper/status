@@ -94,6 +94,9 @@ HOURLY_DIGESTS = [
 # start-runs' token (a fine-grained one, Actions: read and write) expires on
 # this day: written here, as nothing publishes it. Update it with the token.
 START_RUNS_TOKEN_EXPIRES = "2027-01-04"
+# digest-versions' GitLab token (read_api, for gitlab.com) expires on this
+# day, also written here. Update it with the token.
+GITLAB_TOKEN_EXPIRES = "2027-10-27"
 
 ROWS = [
     # Runs and data.
@@ -336,6 +339,16 @@ ROWS = [
         "link": "https://github.com/settings/personal-access-tokens",
         "parts": [
             {"kind": "expiry", "date": START_RUNS_TOKEN_EXPIRES, "green": 21, "red": 7},
+        ],
+    },
+    {
+        "id": "gitlab-token",
+        "group": "tokens",
+        "name": "digest-versions' GitLab token",
+        "every": "renewed by hand",
+        "link": "https://gitlab.com/-/user_settings/personal_access_tokens",
+        "parts": [
+            {"kind": "expiry", "date": GITLAB_TOKEN_EXPIRES, "green": 21, "red": 7},
         ],
     },
 ]
