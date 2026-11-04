@@ -10,6 +10,10 @@
 #
 # For the workflow's checkout: it makes nixkeeper-bot the committer there.
 
+# A failed push is tried again, 4 attempts in all, NIXKEEPER_PUSH_PAUSE seconds
+# apart (30 by default): GitHub sometimes answers a push with a 500, and the
+# whole run's work would wait for the next run.
+
 set -euo pipefail
 
 git config user.name "nixkeeper-bot"
@@ -27,7 +31,19 @@ case "${1:-}" in
     git commit -q -m "$message"
     # Each check stands on its own: the newest replaces whatever is there
     # (the workflow's concurrency group runs one at a time).
-    git push -q --force origin HEAD:data
+    pause=${NIXKEEPER_PUSH_PAUSE:-30}
+    attempts=4
+    for attempt in $(seq "$attempts"); do
+      if git push -q --force origin HEAD:data; then
+        break
+      fi
+      if [ "$attempt" -eq "$attempts" ]; then
+        echo "::error::Pushing the status failed $attempts times."
+        exit 1
+      fi
+      echo "::warning::Pushing the status failed (attempt $attempt of $attempts), trying again in $pause s."
+      sleep "$pause"
+    done
     echo "Published the status as $(git rev-parse --short HEAD), on main."
     ;;
   *)
