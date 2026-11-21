@@ -1,0 +1,491 @@
+{
+ "format": 1,
+ "checkedAt": "2026-11-21T11:15:16.170347+00:00",
+ "state": "yellow",
+ "groups": {
+  "runs": "Runs and data",
+  "ci": "Tests on main",
+  "tokens": "Tokens"
+ },
+ "rows": [
+  {
+   "id": "nixkeeper-sync",
+   "group": "runs",
+   "name": "nixkeeper: sync",
+   "every": "every 3 hours",
+   "link": "https://github.com/nixkeeper/nixkeeper/actions/workflows/data-daily.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run {ago}: success",
+     "at": "2026-11-21T10:31:07+00:00",
+     "link": "https://github.com/nixkeeper/nixkeeper/actions/runs/44894721474"
+    },
+    {
+     "what": "the page's data",
+     "state": "green",
+     "text": "the page's data from {ago}",
+     "at": "2026-11-21T09:16:15.903471+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "nixpkgs: channel at 0bb8272"
+    }
+   ]
+  },
+  {
+   "id": "package-lists",
+   "group": "runs",
+   "name": "nixkeeper: package lists",
+   "every": "checked by every sync",
+   "link": "https://nixkeeper.com/",
+   "state": "green",
+   "parts": [
+    {
+     "what": "the package lists",
+     "state": "green",
+     "text": "the package lists: no problems"
+    }
+   ]
+  },
+  {
+   "id": "nixkeeper-hourly",
+   "group": "runs",
+   "name": "nixkeeper: hourly updates",
+   "every": "every hour, but the sync's",
+   "link": "https://github.com/nixkeeper/nixkeeper/actions/workflows/data-hourly.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run started {ago}, in progress",
+     "at": "2026-11-21T11:15:08+00:00",
+     "link": "https://github.com/nixkeeper/nixkeeper/actions/runs/44898202933"
+    }
+   ]
+  },
+  {
+   "id": "start-runs",
+   "group": "runs",
+   "name": "start-runs",
+   "every": "every hour at :15",
+   "link": "https://github.com/nixkeeper/nixkeeper/blob/main/scripts/start-runs.sh",
+   "state": "green",
+   "parts": [
+    {
+     "what": "starts",
+     "state": "green",
+     "text": "last start {ago} (nixkeeper)",
+     "at": "2026-11-21T11:15:08+00:00"
+    }
+   ]
+  },
+  {
+   "id": "digest-builds",
+   "group": "runs",
+   "name": "digest-builds",
+   "every": "every hour",
+   "link": "https://github.com/nixkeeper/digest-builds/actions/workflows/digest.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run started {ago}, in progress",
+     "at": "2026-11-21T11:15:03+00:00",
+     "link": "https://github.com/nixkeeper/digest-builds/actions/runs/44898194732"
+    },
+    {
+     "what": "master's evaluation read",
+     "state": "green",
+     "text": "master: evaluation 1831727, as of {ago}",
+     "at": "2026-11-21T09:15:11+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "staging-next: evaluation 1831718, as of {ago}",
+     "at": "2026-11-21T06:15:16+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "haskell-updates: evaluation 1831385, 8,649 jobs, as of {ago}",
+     "at": "2026-11-21T01:15:10+00:00"
+    }
+   ]
+  },
+  {
+   "id": "digest-versions",
+   "group": "runs",
+   "name": "digest-versions",
+   "every": "every 12 hours",
+   "link": "https://github.com/nixkeeper/digest-versions/actions/workflows/digest.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run {ago}: success",
+     "at": "2026-11-21T04:15:08+00:00",
+     "link": "https://github.com/nixkeeper/digest-versions/actions/runs/44865167070"
+    },
+    {
+     "what": "data",
+     "state": "green",
+     "text": "data from {ago}",
+     "at": "2026-11-21T04:15:38+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "Repology: 120,649 projects, as of {ago}",
+     "at": "2026-11-21T04:15:38+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "GitHub releases: 34,998 packages, as of {ago}",
+     "at": "2026-11-21T04:15:38+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "Typst Universe: 1,777 packages, as of {ago}",
+     "at": "2026-11-21T04:15:38+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "Emacs archives: MELPA 6,351, MELPA Stable 3,508, NonGNU 294, GNU 514 packages, as of {ago}",
+     "at": "2026-11-21T04:15:38+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "Stackage LTS: nixpkgs follows lts-24.38, lts-24.67 is the newest (3,363 packages), as of {ago}",
+     "at": "2026-11-21T04:15:38+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "CRAN, Bioconductor: CRAN 25,821, Bioconductor 3.23: 3,747 packages, as of {ago}",
+     "at": "2026-11-21T04:15:38+00:00"
+    }
+   ]
+  },
+  {
+   "id": "digest-update-bot",
+   "group": "runs",
+   "name": "digest-update-bot",
+   "every": "every 3 hours",
+   "link": "https://github.com/nixkeeper/digest-update-bot/actions/workflows/digest.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run {ago}: success",
+     "at": "2026-11-21T09:15:08+00:00",
+     "link": "https://github.com/nixkeeper/digest-update-bot/actions/runs/44888683135"
+    },
+    {
+     "what": "data",
+     "state": "green",
+     "text": "data from {ago}",
+     "at": "2026-11-21T09:20:41+00:00"
+    },
+    {
+     "what": "note",
+     "state": null,
+     "text": "27 attempts' logs still to read"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "the bot's queue: going round every 12.1 days, as of {ago}",
+     "at": "2026-11-21T06:14:51+00:00"
+    }
+   ]
+  },
+  {
+   "id": "digest-vulnerabilities",
+   "group": "runs",
+   "name": "digest-vulnerabilities",
+   "every": "every hour",
+   "link": "https://github.com/nixkeeper/digest-vulnerabilities/actions/workflows/digest.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run started {ago}, in progress",
+     "at": "2026-11-21T11:15:04+00:00",
+     "link": "https://github.com/nixkeeper/digest-vulnerabilities/actions/runs/44898197555"
+    },
+    {
+     "what": "the tracker read",
+     "state": "green",
+     "text": "the tracker read from {ago}",
+     "at": "2026-11-21T10:15:12+00:00"
+    },
+    {
+     "what": "OSV read",
+     "state": "green",
+     "text": "OSV read from {ago}",
+     "at": "2026-11-21T10:15:12+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "the security tracker: 5,629 CVEs on 2,205 packages (release 26.05), as of {ago}",
+     "at": "2026-11-21T09:15:16+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "OSV: 407 advisories on 257 packages, as of {ago}",
+     "at": "2026-11-21T09:15:16+00:00"
+    }
+   ]
+  },
+  {
+   "id": "digest-prs",
+   "group": "runs",
+   "name": "digest-prs",
+   "every": "every hour",
+   "link": "https://github.com/nixkeeper/digest-prs/actions/workflows/digest.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run started {ago}, in progress",
+     "at": "2026-11-21T11:15:06+00:00",
+     "link": "https://github.com/nixkeeper/digest-prs/actions/runs/44898200156"
+    },
+    {
+     "what": "data",
+     "state": "green",
+     "text": "data from {ago}",
+     "at": "2026-11-21T10:20:55+00:00"
+    },
+    {
+     "what": "the full sweep",
+     "state": "green",
+     "text": "the full sweep from {ago}",
+     "at": "2026-11-21T04:15:39+00:00"
+    },
+    {
+     "what": "source",
+     "state": null,
+     "text": "nixpkgs' PRs: 12,789 open PRs, 9,945 issues, 555 merged since the channel, 519 on staging, as of {ago}",
+     "at": "2026-11-21T08:20:43+00:00"
+    }
+   ]
+  },
+  {
+   "id": "community-checks",
+   "group": "runs",
+   "name": "nixkeeper: community checks",
+   "every": "every week",
+   "link": "https://github.com/nixkeeper/nixkeeper/actions/workflows/community-checks.yml",
+   "state": "green",
+   "parts": [
+    {
+     "what": "runs",
+     "state": "green",
+     "text": "last run {ago}: success",
+     "at": "2026-11-20T20:37:58+00:00",
+     "link": "https://github.com/nixkeeper/nixkeeper/actions/runs/44813109284"
+    }
+   ]
+  },
+  {
+   "id": "tracker-token",
+   "group": "tokens",
+   "name": "the security tracker's token",
+   "every": "renews itself before it expires",
+   "link": "https://github.com/nixkeeper/digest-vulnerabilities",
+   "state": "yellow",
+   "parts": [
+    {
+     "what": "expiry",
+     "state": "yellow",
+     "text": "expires on 2026-11-30, in 9 days"
+    }
+   ]
+  },
+  {
+   "id": "start-runs-token",
+   "group": "tokens",
+   "name": "start-runs' token",
+   "every": "renewed by hand",
+   "link": "https://github.com/settings/personal-access-tokens",
+   "state": "green",
+   "parts": [
+    {
+     "what": "expiry",
+     "state": "green",
+     "text": "expires on 2027-01-04, in 44 days"
+    }
+   ]
+  },
+  {
+   "id": "gitlab-token",
+   "group": "tokens",
+   "name": "digest-versions' GitLab token",
+   "every": "renewed by hand",
+   "link": "https://gitlab.com/-/user_settings/personal_access_tokens",
+   "state": "green",
+   "parts": [
+    {
+     "what": "expiry",
+     "state": "green",
+     "text": "expires on 2027-10-27, in 340 days"
+    }
+   ]
+  },
+  {
+   "id": "ci-nixkeeper",
+   "group": "ci",
+   "name": "nixkeeper",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/nixkeeper/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-20T20:41:15+00:00",
+     "link": "https://github.com/nixkeeper/nixkeeper/actions/runs/44813594113"
+    }
+   ]
+  },
+  {
+   "id": "ci-digest-builds",
+   "group": "ci",
+   "name": "digest-builds",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/digest-builds/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-20T12:37:25+00:00",
+     "link": "https://github.com/nixkeeper/digest-builds/actions/runs/44737322190"
+    }
+   ]
+  },
+  {
+   "id": "ci-digest-versions",
+   "group": "ci",
+   "name": "digest-versions",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/digest-versions/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-17T22:51:08+00:00",
+     "link": "https://github.com/nixkeeper/digest-versions/actions/runs/44194011711"
+    }
+   ]
+  },
+  {
+   "id": "ci-digest-update-bot",
+   "group": "ci",
+   "name": "digest-update-bot",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/digest-update-bot/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-17T22:51:34+00:00",
+     "link": "https://github.com/nixkeeper/digest-update-bot/actions/runs/44194078182"
+    }
+   ]
+  },
+  {
+   "id": "ci-digest-vulnerabilities",
+   "group": "ci",
+   "name": "digest-vulnerabilities",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/digest-vulnerabilities/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-19T14:47:28+00:00",
+     "link": "https://github.com/nixkeeper/digest-vulnerabilities/actions/runs/44547573458"
+    }
+   ]
+  },
+  {
+   "id": "ci-digest-prs",
+   "group": "ci",
+   "name": "digest-prs",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/digest-prs/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-17T22:51:52+00:00",
+     "link": "https://github.com/nixkeeper/digest-prs/actions/runs/44194124163"
+    }
+   ]
+  },
+  {
+   "id": "ci-nixkeeper-mcp",
+   "group": "ci",
+   "name": "nixkeeper-mcp",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/nixkeeper-mcp/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-17T22:52:21+00:00",
+     "link": "https://github.com/nixkeeper/nixkeeper-mcp/actions/runs/44194198610"
+    }
+   ]
+  },
+  {
+   "id": "ci-status",
+   "group": "ci",
+   "name": "status",
+   "every": "on every push to main",
+   "link": "https://github.com/nixkeeper/status/actions/workflows/ci.yml?query=branch%3Amain",
+   "state": "green",
+   "parts": [
+    {
+     "what": "tests",
+     "state": "green",
+     "text": "success {ago}",
+     "at": "2026-11-17T22:06:59+00:00",
+     "link": "https://github.com/nixkeeper/status/actions/runs/44186787082"
+    }
+   ]
+  }
+ ],
+ "run": "https://github.com/nixkeeper/status/actions/runs/44898205329"
+}
